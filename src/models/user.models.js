@@ -4,6 +4,12 @@ import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
   {
+    fullName: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
+    },
     username: {
       type: String,
       required: true,
@@ -18,12 +24,6 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-    },
-    fullName: {
-      type: String,
-      required: true,
-      trim: true,
-      index: true,
     },
     avatar: {
       type: String, // Cloudinary url
@@ -51,7 +51,7 @@ const userSchema = new Schema(
 
 // password encrypted
 userSchema.pre("save", async function (next) {
-  if (!this.modified("password")) return next();
+  if (!this.isModified("password")) return next();
 
   this.password = bcrypt.hash(this.password, 10);
 
@@ -73,7 +73,7 @@ userSchema.methods.generateAccessToken = function () {
       fullName: this.fullName,
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY}
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
   );
 };
 
@@ -84,7 +84,7 @@ userSchema.methods.generateRefreshToken = function () {
       _id: this._id,
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY}
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
   );
 };
 
