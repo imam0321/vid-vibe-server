@@ -24,7 +24,6 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new ApiError(409, "User with email or username already exists");
   }
-  // console.warn(req.files);
   const avatarLocalPath = req.files?.avatar?.[0]?.path;
   const coverLocalPath = req.files?.coverImage?.[0]?.path;
 
@@ -35,17 +34,13 @@ const registerUser = asyncHandler(async (req, res) => {
   let avatar;
   try {
     avatar = await uploadOnCloudinary(avatarLocalPath);
-    // console.log("Uploaded avatar", avatar);
   } catch (error) {
-    // console.log("Error uploading avatar", error);
     throw new ApiError(500, "Failed to upload avatar");
   }
   let coverImage;
   try {
     coverImage = await uploadOnCloudinary(coverLocalPath);
-    // console.log("Uploaded coverImage", coverImage);
   } catch (error) {
-    // console.log("Error uploading coverImage", error);
     throw new ApiError(500, "Failed to upload coverImage");
   }
 
